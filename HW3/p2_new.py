@@ -27,17 +27,28 @@ for v in range(num_rows - 15):
     for u in range(num_cols - 15):
         # v is fixed even in Er
         max_ncc, max_u2 = -float('inf'), 0
-        for u2 in range(num_cols - 15):
-            ncc = compute_ncc(u, v, u2)
-            if ncc > max_ncc:
-                max_ncc, max_u2 = ncc, u2
-        z = b * f / (u - max_u2)
-        x = z * u / f
-        y = z * v / f
-        output_file.write('(' + str(x) + ', ' + str(y) + ', ' + str(z) + ')')
-        three_D_points.append((x, y, z))
+        if u > 100:
+            for u2 in range(u - 100, u):
+                ncc = compute_ncc(u, v, u2)
+                if ncc > max_ncc:
+                    max_ncc, max_u2 = ncc, u2
+        else:
+            max_u2 = -1
+            # for u2 in range(num_cols - 15):
+            #     ncc = compute_ncc(u, v, u2)
+            #     if ncc > max_ncc:
+            #         max_ncc, max_u2 = ncc, u2
+        try:
+            z = b * f / (u - max_u2)
+            x = z * u / f
+            y = z * v / f
+            output_file.write('(' + str(x) + ', ' + str(y) + ', ' + str(z) + ')')
+            three_D_points.append((x, y, z))
+        except:
+            print("There was no disparity! Writing \'No Disparity.\' to output file...")
+            output_file.write('No Disparity')
 
-for (x, y, z) in three_D_points:
-    print(x, y, z)
+# for (x, y, z) in three_D_points:
+    # print(x, y, z)
 
 
