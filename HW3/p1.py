@@ -12,12 +12,11 @@ FILE_NAME = 'f000'
 FILE_FORMAT = '.jpg'
 
 orb_features = []
-orb_keypoints = []
 
 print("============================= Part i, ii =============================")
-# i), ii) Collect orb features for all training images into one large vector and run kmeans
+# i, ii) Collect orb features for all training images into one large vector and run kmeans
 for scene in SCENE_TYPE:
-    for i in range(51, 100):
+    for i in range(51, 200):
         img_number = None
         if i < 10:
             img_number = '00' + str(i)
@@ -31,12 +30,13 @@ for scene in SCENE_TYPE:
         keypoints = orb.detect(img, None)
         keypoints, descriptors = orb.compute(img, keypoints)
         orb_features.extend(descriptors)
-        orb_keypoints.append(keypoints)
-        print("Finished computing orb for " + PATH_TO_FILE + DATASET_TYPE[0] + '/' + \
-                scene + '/' + FILE_NAME + img_number + FILE_FORMAT + ".")
+        # print("Finished computing orb for " + PATH_TO_FILE + DATASET_TYPE[0] + '/' + \
+        #         scene + '/' + FILE_NAME + img_number + FILE_FORMAT + ".")
+    print("Finished computing orb for all images in training class " + scene + ".")
 
 features = np.float32(orb_features)
 criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
+
 try:
     print("Computing kmeans. This can take a while...")
     ret, label, bag_of_words = cv2.kmeans(data=features, K=800, criteria=criteria, \
@@ -52,7 +52,7 @@ matching_scenes = []
 print("============================= Part iii =============================")
 # iii) Create BoW encoding vector for each training image using BoW
 for scene in SCENE_TYPE:
-    for i in range(51, 100):
+    for i in range(51, 200):
         img_number = None
         if i < 10:
             img_number = '00' + str(i)
@@ -92,15 +92,16 @@ for scene in SCENE_TYPE:
 
         bow_vectors.append(bow_vector)
         matching_scenes.append(scene)
-        print("Finished computing encoding vector for " + PATH_TO_FILE + DATASET_TYPE[0] + \
-                '/' + scene + '/' + FILE_NAME + img_number + FILE_FORMAT + ".")
+        # print("Finished computing encoding vector for " + PATH_TO_FILE + DATASET_TYPE[0] + \
+        #         '/' + scene + '/' + FILE_NAME + img_number + FILE_FORMAT + ".")
+    print("Finished computing encoding vector for all training images in " + scene + ".")
 
 print("============================= Part iv =============================")
 # iv) Match testing image with label and check accuracy
 num_correct = 0.0
 num_images = 0.0
 for scene in SCENE_TYPE:
-    for i in range(0, 50):
+    for i in range(51):
         img_number = None
         if i < 10:
             img_number = '00' + str(i)
@@ -135,10 +136,12 @@ for scene in SCENE_TYPE:
             for key, value in bow_vector.items():
                 bow_vector[key] = bow_vector[key] / sum_weights
         except:
-            print("             Error!")
+            print("             Error in computing encoding vector for " + \
+                    PATH_TO_FILE + DATASET_TYPE[1] + '/' + scene + '/' + \
+                    FILE_NAME + img_number + FILE_FORMAT + "!")
         
-        print("Finished computing encoding vector for " + PATH_TO_FILE + DATASET_TYPE[1] + \
-                '/' + scene + '/' + FILE_NAME + img_number + FILE_FORMAT + ".")
+        # print("Finished computing encoding vector for " + PATH_TO_FILE + DATASET_TYPE[1] + \
+        #         '/' + scene + '/' + FILE_NAME + img_number + FILE_FORMAT + ".")
 
         min_cost = float('inf')
         min_scene = None
@@ -150,8 +153,8 @@ for scene in SCENE_TYPE:
                 min_scene = matching_scenes[j]
         if min_scene == scene:
             num_correct += 1
+    print("Finished computing encoding vector for all test images in " + scene + ".")
 
-print("======= Accuracy =======")
-accuracy = num_correct / num_images
-print(str(accuracy) + " (" + str(num_correct) + " / " + str(num_images) + ")")
-print("========================")
+print("============ Accuracy ============")
+print(str(num_correct / num_images) + " (" + str(num_correct) + " / " + str(num_images) + ")")
+print("==================================")
