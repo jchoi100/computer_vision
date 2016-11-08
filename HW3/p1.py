@@ -29,10 +29,15 @@ for scene in SCENE_TYPE:
         orb = cv2.ORB()
         keypoints = orb.detect(img, None)
         keypoints, descriptors = orb.compute(img, keypoints)
-        orb_features.extend(descriptors)
+        try:
+            orb_features.extend(descriptors)
+        except:
+            pass
         # print("Finished computing orb for " + PATH_TO_FILE + DATASET_TYPE[0] + '/' + \
         #         scene + '/' + FILE_NAME + img_number + FILE_FORMAT + ".")
+    print("----------------------------------------------------------------------------")
     print("Finished computing orb for all images in training class " + scene + ".")
+    print("----------------------------------------------------------------------------")
 
 features = np.float32(orb_features)
 criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
@@ -94,7 +99,9 @@ for scene in SCENE_TYPE:
         matching_scenes.append(scene)
         # print("Finished computing encoding vector for " + PATH_TO_FILE + DATASET_TYPE[0] + \
         #         '/' + scene + '/' + FILE_NAME + img_number + FILE_FORMAT + ".")
+    print("----------------------------------------------------------------------------")
     print("Finished computing encoding vector for all training images in " + scene + ".")
+    print("----------------------------------------------------------------------------")
 
 print("============================= Part iv =============================")
 # iv) Match testing image with label and check accuracy
@@ -153,7 +160,9 @@ for scene in SCENE_TYPE:
                 min_scene = matching_scenes[j]
         if min_scene == scene:
             num_correct += 1
+    print("----------------------------------------------------------------------------")
     print("Finished computing encoding vector for all test images in " + scene + ".")
+    print("----------------------------------------------------------------------------")
 
 print("============ Accuracy ============")
 print(str(num_correct / num_images) + " (" + str(num_correct) + " / " + str(num_images) + ")")
