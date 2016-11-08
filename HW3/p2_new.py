@@ -42,11 +42,11 @@ for v in range(num_rows - 15):
             z = b * f / (u - max_u2)
             x = z * u / f
             y = z * v / f
-            output_file.write('(' + str(x) + ', ' + str(y) + ', ' + str(z) + ')')
+            output_file.write('(' + str(x) + ', ' + str(y) + ', ' + str(z) + ')\n')
             three_D_points.append((x, y, z))
         except:
             print("There was no disparity! Writing \'No Disparity.\' to output file...")
-            output_file.write('No Disparity')
+            output_file.write('No Disparity\n')
 
 # for (x, y, z) in three_D_points:
     # print(x, y, z)
