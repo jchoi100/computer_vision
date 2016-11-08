@@ -1,0 +1,53 @@
+EN.600.461-Computer Vision
+Homework 1 README
+
+Name: Joon Hyuck Choi
+JHED: jchoi100
+Section: 461
+
+Note:
+    For Problem 1, please run test_objects.py to see how the code runs.
+    For Problem 2, please run edge_detection_driver.py.
+
+p1: For the threshold value, I used 110 in test_objects.py.
+    The function, of course, can take any value for the argument.
+
+p2: Rather than assigning labels 0, 1, 2 to detected objects, I assigned
+    larger values that make sense in grayscale. In other words, when the
+    labeled image is written to a .pgm file, different objects have
+    actually distinguishable grayscale colors.
+
+p3: No additional attributes other than the ones required by the problem
+    were added to the database output.
+
+p4: Most of the attributes saved for each object were not that helpful
+    in detecting the same object in different images. The one that actually
+    helped was "roundness". Because roundness is E_min/E_max, it was the
+    most distinguishing feature amongst different objects. However,
+    I had to account for +- 10% of variability here as well.
+
+p5: I used to 3*3 Sobel mask because it was the one that worked reasonably
+    well on the input images.
+
+p6: I used [-rho_max, rho_max] as the number of rows of the accumulator
+    array and [-90, 90] as the number of columns for the accumulator array.
+    The reason that I chose this was that the time it took to process the
+    sample images was not that long even for these dimensions.
+
+    As for the voting scheme, I did the common way of incrementing the
+    position in the accumulator array if the thresholded image had a non-
+    zero value at a particular pixel point.
+
+    For the edge threshold, I used 100 because it worked well. (trial and
+    error approach)
+
+p7: For the threshold for images 'hough_simple_1.pgm' and 'hough_simple_2.pgm', 
+    I used 230 after various trial and errors.
+    For 'hough_complex_1.pgm', I used a threshold value of 85.
+
+edge_detection_driver.py: There were some issues with importing the
+                          individual functions from separate files, so 
+                          I copied and pasted all the code in the separate
+                          files into this one file.
+
+[END]

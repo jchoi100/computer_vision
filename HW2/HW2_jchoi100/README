@@ -1,0 +1,80 @@
+EN.600.461-Computer Vision
+Homework 2 README
+
+Name: Joon Hyuck Choi
+JHED: jchoi100
+Section: 461
+
+Programming Language: MATLAB
+
+0. How to run the program using 'driver.m'
+
+  (MATLAB terminal): hw2('img1_name.png', 'img2_name.png');
+
+1. Feature Detection
+
+I used a sigma of 4 and window radius of 3. For the threshold,
+I think a value somewhere around 1000 worked well. For the
+submitted code, I wrote 1300. However, depending on the image,
+other values (like 1000 or 1200) worked better. For the k value,
+I picked 0.04.
+
+
+2. Feature Matching
+
+First as an 'error check', I checked if the two input images
+had the same dimension. If not, I took the maximum height and 
+width of the two images and padded the margins with 0's to
+make the two images have equal dimensions.
+
+Then, I used the Normalized Cross Correlation method to match
+features in the two input images. For the patch size, I used 5.
+
+
+3. Alignment and Stitching
+
+* Please see attached photos for outliers and stitcthing.
+
+* Please note that due to randomness, certain photos might not
+  stitch well with each other during the first couple of runs.
+  It might take a few runs until we can see a good stitch.
+
+* Adjustments in patch window size, ransac threshold, feature
+  detection threshold, and sigma were applied to improve the
+  overall process. Please note that the configuration as is
+  in the submitted version might not work well for all the
+  8 combinations listed below.
+
+1) leuven1 -> leuven2: The results were satisfying. The two
+                       images were overlaid very well.
+2) leuven1 -> leuven3: Similar to the previous case, this case
+                       also showed good results. The two images
+                       were overlaid well and the outlier/inlier
+                       detection was satisfactory.
+3) wall1 -> wall2: Contrary to our expectations, the results
+                   for wall1 -> wall2 were surprisingly good.
+4) wall1 -> wall3: As expected, the results were pretty bad.
+                   Contrary to the previous case, the 
+                   perspective differences between wall1 and
+                   wall3 were too great. Also, the fact that
+                   the two images are photos of brick walls
+                   without much variation all throughout the
+                   photo contributes to the low accuracy.
+5) bikes1 -> bikes2: The results are not as good as expected.
+                     However, we still get a pretty good match
+                     of the main features that appear.
+6) bikes1 -> bikes3: Similar to the previous case,the results
+                     were not as clean as expected. Still, we
+                     can see an better overlay and outlier/inlier 
+                     classification than the previous case.
+7) graf1 -> graf2: Results were generally satisfying although
+                   not perfect.
+8) graf1 -> graf3: Results were not perfect. It seems like
+                   the fact that graf3.png is taken from a very
+                   different perspective from graf1.png has a
+                   considerable effect on the affine xforms.
+
+4. Notes:
+  * Please refer to the output .png images of the overlays
+    and outlier/inlier plotting for the 8 cases mentioned.
+    The best instances out of several trials were captured.

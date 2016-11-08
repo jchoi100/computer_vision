@@ -1,0 +1,71 @@
+EN.600.461 Computer Vision
+Fall 2016
+Homework #3
+
+Name: Joon Hyuck Choi
+JHED: jchoi100
+email: jchoi100@jhu.edu
+
+Problem 1)
+    Note:
+        1) Please see p1.py for this problem.
+            The code is implemented as a script.
+            It can be run either by pasting in the code to a python 
+            terminal or by simply typing "python p1.py" in the terminal.
+
+        2) In implementing 1 nearest neighbor search, I used the 
+            distance weighted approach. (This is how I kept note of the 
+            "votes" before running the 1NN.) The values were normalized.
+
+        3) This code assumes the following directory structure.
+                current directory
+                    |____ p1.py
+                    |____ /train/
+                    |        |____ faces
+                    |        |____ trees
+                    |           .
+                    |           .
+                    |        |____ buildings
+                    |____ /test/
+                             |____ faces
+                             |____ trees
+                                .
+                                .
+                             |____ buildings    
+    Accuracy Results:
+        I ran the code on different k values and different number
+        of images used for training.
+        Generally, if k is larger, results should be better.
+        However, for my series of tests, the accuracy values were
+        not consistent. Some results are reported below.
+
+        Due to time constraints (for large k values and many 
+        training images, tests ran for over 9 hours...), I used
+        a subset of images in the training set to train and all
+        the test images for testing.
+
+        1) k = 800
+            accuracy = 88/300 = 0.2933333
+        2) k = 1600
+            accuracy = 91/300 = 0.3033333
+        3) k = 2500
+            accuracy = 82/300 = 0.2733333
+
+Problem 2)
+    Note:
+        1) Please see p2.py for this problem.
+            The code is implemented as a script.
+            It can be run either by pasting in the code to a python 
+            terminal or by simply typing "python p2.py" in the terminal.
+
+        2) This code assumes the following directory structure.
+                current directory
+                    |____ p2.py
+                    |____ scene_l.bmp
+                    |____ scene_r.bmp
+
+    Discussion:
+
+
+Problem 3)
+    Please see problem3.pdf for this problem.
