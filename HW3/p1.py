@@ -34,8 +34,9 @@ for scene in SCENE_TYPE:
         keypoints = orb.detect(img, None)
         keypoints, descriptors = orb.compute(img, keypoints)
         try:
-            orb_features.extend(descriptors) #############################################################This might be append, not extend###################
+            orb_features.extend(descriptors)
         except:
+            print("       Error with extending orb_features with descriptors!")
             pass
     print("----------------------------------------------------------------------------")
     print("Finished computing orb for all images in training class " + scene + ".")
@@ -131,7 +132,7 @@ for scene in SCENE_TYPE:
 
         # Use 1-NN search to the training features to get best label
         dist, match = bow_vectors.query(bow_vector, 1)
-        min_scene = matching_scenes[match[0]]
+        min_scene = matching_scenes[match]
         if min_scene == scene:
             num_correct += 1
     print("----------------------------------------------------------------------------")
