@@ -44,7 +44,9 @@ for v in range(num_rows - WINDOW_SIZE):
 
 for v in range(num_rows):
     for u in range(num_cols):
+        # Handling pixels with disparity 0
         if depth_map[v][u] == -1:
+            # Handling edge cases and then normal case in the end.
             if v == 0 and u == 0:
                 depth_map[v][u] = (depth_map[v+1][u] + depth_map[v][u+1]) / 2
             elif v == 0 and u == num_cols - 1:
@@ -63,6 +65,6 @@ for v in range(num_rows):
                 depth_map[v][u] = (depth_map[v+1][u] + depth_map[v-1][u] + depth_map[v][u-1]) / 3
             else:
                 depth_map[v][u] = (depth_map[v-1][u] + depth_map[v+1][u] + depth_map[v][u-1] + depth_map[v][u+1]) / 4
-
+# Normalize/rescale to 0~255
 depth_map *= (255.0/depth_map.max())
 cv2.imwrite('jchoi100_hw3_depth_map.jpg', depth_map)
