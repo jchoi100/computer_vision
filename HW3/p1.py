@@ -51,11 +51,11 @@ except:
     try:
         print("Computing kmeans. This can take a while...")
         ret, label, bag_of_words = cv2.kmeans(data=features, K=800, criteria=criteria, attempts=10, flags=cv2.KMEANS_RANDOM_CENTERS)
+        pickle.dump(bag_of_words, open('bag_of_words.p', 'wb'))  
         print("Successful!")
     except:
         print("Failed!")
-        sys.exit(1)
-    pickle.dump(bag_of_words, open('bag_of_words.p', 'wb'))    
+        sys.exit(1)  
 
 bag_of_words = cKDTree(bag_of_words)
 bow_vectors = []
@@ -118,22 +118,20 @@ for scene in SCENE_TYPE:
         bow_vector = np.array([0.]*800)
         try:
             for descriptor in descriptors:
-                dist, match = bag_of_words.query(d, 5)
+                dist, match = bag_of_words.query(descriptor, 5)
                 for i in range(len(match)):
                     bow_vector[match[i]] = 1 / dist[i]
             # Normalize
             std = np.std(bow_vector) if np.std(bow_vector) != 0 else 0.001
-            bow_vectors.append((bow_vector - np.mean(bow_vector)) / std)
+            bow_vector = (bow_vector - np.mean(bow_vector)) / std
         except:
             print("      Error in computing encoding vector for " + \
                     PATH_TO_FILE + DATASET_TYPE[1] + '/' + scene + '/' + \
                     FILE_NAME + img_number + FILE_FORMAT + "!")
 
-        min_scene = None
         # Use 1-NN search to the training features to get best label
-        for j in range(len(bow_vectors)):
-            dist, match = bag_of_words.query(bow_vector, 1)
-            min_scene = matching_scenes[match[0]]
+        dist, match = bag_of_words.query(bow_vector, 1)
+        min_scene = matching_scenes[match[0]]
         if min_scene == scene:
             num_correct += 1
     print("----------------------------------------------------------------------------")
