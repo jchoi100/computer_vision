@@ -95,6 +95,8 @@ for scene in SCENE_TYPE:
     print("Finished computing encoding vector for all training images in " + scene + ".")
     print("----------------------------------------------------------------------------")
 
+bow_vectors = cKDTree(bow_vectors)
+
 print("============================= Part iv =============================")
 # iv) Match testing image with label and check accuracy
 num_correct = 0.0
@@ -127,12 +129,8 @@ for scene in SCENE_TYPE:
                     PATH_TO_FILE + DATASET_TYPE[1] + '/' + scene + '/' + \
                     FILE_NAME + img_number + FILE_FORMAT + "!")
 
-        print(bag_of_words.shape)
-        print(bag_of_words[0].shape)
-        print(bow_vector.shape)
-
         # Use 1-NN search to the training features to get best label
-        dist, match = bag_of_words.query(bow_vector, 1)
+        dist, match = bow_vectors.query(bow_vector, 1)
         min_scene = matching_scenes[match[0]]
         if min_scene == scene:
             num_correct += 1
