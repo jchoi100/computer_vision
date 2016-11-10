@@ -67,4 +67,7 @@ for v in range(num_rows):
                 depth_map[v][u] = (depth_map[v-1][u] + depth_map[v+1][u] + depth_map[v][u-1] + depth_map[v][u+1]) / 4
 # Normalize/rescale to 0~255
 depth_map *= (255.0/depth_map.max())
+print(depth_map)
+print(depth_map.max())
+print(depth_map.min())
 cv2.imwrite('jchoi100_hw3_depth_map.jpg', depth_map)
