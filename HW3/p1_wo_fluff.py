@@ -12,20 +12,27 @@ orb = cv2.ORB()
 # i, ii) Collect orb features for all training images into one large vector and run kmeans
 orb_features = []
 for scene in SCENE_TYPE:
-    for i in range(51, 200):
-        if i < 10:
-            img_number = '00' + str(i)
-        elif 10 <= i and i < 100:
-            img_number = '0' + str(i)
-        else:
-            img_number = str(i)
-        img = cv2.imread('./train/' + scene + '/f000' + img_number + '.jpg')
-        keypoints = orb.detect(img, None)
-        keypoints, descriptors = orb.compute(img, keypoints)
-        try:
-            orb_features.extend(descriptors)
-        except:
-            pass
+    try:
+        scene_descriptors = pickle.load(open(scene + 'descriptors.p', 'rb'))
+    except:
+        scene_descriptors = []
+        for i in range(51, 200):
+            if i < 10:
+                img_number = '00' + str(i)
+            elif 10 <= i and i < 100:
+                img_number = '0' + str(i)
+            else:
+                img_number = str(i)
+            img = cv2.imread('./train/' + scene + '/f000' + img_number + '.jpg')
+            keypoints = orb.detect(img, None)
+            keypoints, descriptors = orb.compute(img, keypoints)
+            try:
+                scene_descriptors.extend(descriptors)
+            except:
+                pass
+        pickle.dump(scene_descriptors, open(scene + 'descriptors.p', 'wb'))
+    orb_features.extend(scene_descriptors)
+print("Finished computing orb features for all images!")
 
 features = whiten(np.float32(orb_features))
 criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
@@ -39,6 +46,7 @@ except:
     except:
         sys.exit(1)  
 bag_of_words = cKDTree(bag_of_words)
+print("Finished computing kmeans!")
 
 # iii) Create BoW encoding vector for each training image using BoW
 bow_vectors, matching_scenes = [], []
@@ -63,7 +71,7 @@ for scene in SCENE_TYPE:
             matching_scenes.append(scene)
         except:
             print("----> Error in computing encoding vector for ./train/" + scene + "/f000" + img_number + ".jpg")
-    print("Finished computing encoding vector for all training images in " + scene + ".")
+print("Finished computing encoding vector for all training images.")
 
 # iv) Match testing image with label and check accuracy
 bow_vectors = cKDTree(bow_vectors)
@@ -93,7 +101,7 @@ for scene in SCENE_TYPE:
         min_scene = matching_scenes[match]
         if min_scene == scene:
             num_correct += 1.0
-    print("Finished computing encoding vector for all test images in " + scene + ".")
+print("Finished computing encoding vector for all test images.")
 
 print("============ Accuracy ============")
 print(str(num_correct / num_images) + " (" + str(num_correct) + " / " + str(num_images) + ")")
