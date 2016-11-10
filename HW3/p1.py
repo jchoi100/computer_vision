@@ -6,6 +6,8 @@ from math import sqrt
 from scipy.spatial.distance import euclidean
 from scipy.cluster.vq import whiten
 from scipy.spatial import cKDTree
+import pdb
+import pickle
 
 PATH_TO_FILE = './'
 DATASET_TYPE = ['train', 'test']
@@ -16,6 +18,7 @@ FILE_FORMAT = '.jpg'
 print("============================= Part i, ii =============================")
 # i, ii) Collect orb features for all training images into one large vector and run kmeans
 orb_features = []
+
 for scene in SCENE_TYPE:
     for i in range(51, 200):
         img_number = None
@@ -31,7 +34,7 @@ for scene in SCENE_TYPE:
         keypoints = orb.detect(img, None)
         keypoints, descriptors = orb.compute(img, keypoints)
         try:
-            orb_features.extend(descriptors)
+            orb_features.extend(descriptors) #############################################################This might be append, not extend###################
         except:
             pass
         # print("Finished computing orb for " + PATH_TO_FILE + DATASET_TYPE[0] + '/' + \
@@ -41,19 +44,24 @@ for scene in SCENE_TYPE:
     print("----------------------------------------------------------------------------")
 
 features = np.float32(orb_features)
+print(features.shape)
 features = whiten(features)
 criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
 
 try:
-    print("Computing kmeans. This can take a while...")
-    ret, label, bag_of_words = cv2.kmeans(data=features, K=800, criteria=criteria, \
-                                            attempts=10, flags=cv2.KMEANS_RANDOM_CENTERS)
-    print("Successful!")
+    bag_of_words = pickle.load(open('bag_of_words.p', 'rb'))
 except:
-    print("Failed!")
-    sys.exit(1)
+    try:
+        print("Computing kmeans. This can take a while...")
+        ret, label, bag_of_words = cv2.kmeans(data=features, K=800, criteria=criteria, \
+                                                attempts=10, flags=cv2.KMEANS_RANDOM_CENTERS)
+        print("Successful!")
+    except:
+        print("Failed!")
+        sys.exit(1)
+    bag_of_words = cKDTree(bag_of_words)
+    pickle.dump(bag_of_words, open('bag_of_words.p', 'wb'))    
 
-bag_of_words = cKDTree(bag_of_words)
 bow_vectors = []
 matching_scenes = []
 
@@ -101,7 +109,9 @@ for scene in SCENE_TYPE:
                     # bow_vector[key] = (bow_vector[key] - np.mean(bow_vector)) / np.
             # for key, value in bow_vector.items():
                 # bow_vector[key] = value / float(sum_weights)
+        
         except:
+            pdb.set_trace()
             print("      Error in computing encoding vector for " + \
                     PATH_TO_FILE + DATASET_TYPE[0] + '/' + scene + '/' + \
                     FILE_NAME + img_number + FILE_FORMAT + "!")
