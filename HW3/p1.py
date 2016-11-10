@@ -85,13 +85,11 @@ for scene in SCENE_TYPE:
             # Normalize
             std = np.std(bow_vector) if np.std(bow_vector) != 0 else 0.001
             bow_vectors.append((bow_vector - np.mean(bow_vector)) / std)
+            matching_scenes.append(scene)
         except:
             print("      Error in computing encoding vector for " + \
                     PATH_TO_FILE + DATASET_TYPE[0] + '/' + scene + '/' + \
                     FILE_NAME + img_number + FILE_FORMAT + "!")
-
-        # bow_vectors.append(bow_vector)
-        matching_scenes.append(scene)
 
     print("----------------------------------------------------------------------------")
     print("Finished computing encoding vector for all training images in " + scene + ".")
@@ -128,6 +126,10 @@ for scene in SCENE_TYPE:
             print("      Error in computing encoding vector for " + \
                     PATH_TO_FILE + DATASET_TYPE[1] + '/' + scene + '/' + \
                     FILE_NAME + img_number + FILE_FORMAT + "!")
+
+        print(bag_of_words.shape)
+        print(bag_of_words[0].shape)
+        print(bow_vector.shape)
 
         # Use 1-NN search to the training features to get best label
         dist, match = bag_of_words.query(bow_vector, 1)
