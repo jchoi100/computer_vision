@@ -37,14 +37,11 @@ for scene in SCENE_TYPE:
             orb_features.extend(descriptors) #############################################################This might be append, not extend###################
         except:
             pass
-        # print("Finished computing orb for " + PATH_TO_FILE + DATASET_TYPE[0] + '/' + \
-        #         scene + '/' + FILE_NAME + img_number + FILE_FORMAT + ".")
     print("----------------------------------------------------------------------------")
     print("Finished computing orb for all images in training class " + scene + ".")
     print("----------------------------------------------------------------------------")
 
 features = np.float32(orb_features)
-print(features.shape)
 features = whiten(features)
 criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
 
@@ -53,8 +50,7 @@ try:
 except:
     try:
         print("Computing kmeans. This can take a while...")
-        ret, label, bag_of_words = cv2.kmeans(data=features, K=800, criteria=criteria, \
-                                                attempts=10, flags=cv2.KMEANS_RANDOM_CENTERS)
+        ret, label, bag_of_words = cv2.kmeans(data=features, K=800, criteria=criteria, attempts=10, flags=cv2.KMEANS_RANDOM_CENTERS)
         print("Successful!")
     except:
         print("Failed!")
@@ -76,50 +72,27 @@ for scene in SCENE_TYPE:
             img_number = '0' + str(i)
         else:
             img_number = str(i)
-        img = cv2.imread(PATH_TO_FILE + DATASET_TYPE[0] + '/' + scene + \
-                '/' + FILE_NAME + img_number + FILE_FORMAT)
+        img = cv2.imread(PATH_TO_FILE + DATASET_TYPE[0] + '/' + scene + '/' + FILE_NAME + img_number + FILE_FORMAT)
         orb = cv2.ORB()
         keypoints = orb.detect(img, None)
         keypoints, descriptors = orb.compute(img, keypoints)
         bow_vector = np.array([0.]*800)
-        # for j in range(len(bag_of_words)):
-            # bow_vector[j] = 0.0
-        sum_weights = 0.0
         try:
             for descriptor in descriptors:
-                # min_cost = float('inf')
-                # min_word = None
-                # min_index = -1
-                for d in descriptor:
-                    dist, match = bag_of_words.query(d, 5)
-                    for i in range(len(match)):
-                        bow_vector[match[i]] = 1 / dist[i]
-                # for j in range(len(bag_of_words)):
-                #     curr_cost = euclidean(bag_of_words[j], descriptor)
-                #     if curr_cost < min_cost:
-                #         min_cost = curr_cost
-                #         min_word = bag_of_words[j]
-                #         min_index = j
-                # bow_vector[min_index] += 1 / (min_cost**2 + 1)
-                # sum_weights += 1 / (min_cost**2 + 1)
-
+                dist, match = bag_of_words.query(descriptor, 5)
+                for i in range(len(match)):
+                    bow_vector[match[i]] = 1 / dist[i]
             # Normalize
-                bow_vectors.append((bow_vector - np.mean(bow_vector))/np.std(bow_vector))
-                # for key, value in bow_vector.items():
-                    # bow_vector[key] = (bow_vector[key] - np.mean(bow_vector)) / np.
-            # for key, value in bow_vector.items():
-                # bow_vector[key] = value / float(sum_weights)
-        
+            std = np.std(bow_vector) if np.std(bow_vector) != 0 else 0.001
+            bow_vectors.append((bow_vector - np.mean(bow_vector)) / std)
         except:
-            pdb.set_trace()
             print("      Error in computing encoding vector for " + \
                     PATH_TO_FILE + DATASET_TYPE[0] + '/' + scene + '/' + \
                     FILE_NAME + img_number + FILE_FORMAT + "!")
 
         # bow_vectors.append(bow_vector)
         matching_scenes.append(scene)
-        # print("Finished computing encoding vector for " + PATH_TO_FILE + DATASET_TYPE[0] + \
-        #         '/' + scene + '/' + FILE_NAME + img_number + FILE_FORMAT + ".")
+
     print("----------------------------------------------------------------------------")
     print("Finished computing encoding vector for all training images in " + scene + ".")
     print("----------------------------------------------------------------------------")
@@ -137,70 +110,30 @@ for scene in SCENE_TYPE:
             img_number = '0' + str(i)
         else:
             img_number = str(i)
-        img = cv2.imread(PATH_TO_FILE + DATASET_TYPE[1] + '/' + scene + \
-                            '/' + FILE_NAME + img_number + FILE_FORMAT)
+        img = cv2.imread(PATH_TO_FILE + DATASET_TYPE[1] + '/' + scene + '/' + FILE_NAME + img_number + FILE_FORMAT)
         num_images += 1
         orb = cv2.ORB()
         keypoints = orb.detect(img, None)
         keypoints, descriptors = orb.compute(img, keypoints)
-        # bow_vector = {}
         bow_vector = np.array([0.]*800)
-        for j in range(len(bag_of_words)):
-            bow_vector[j] = 0.0
-        sum_weights = 0.0
         try:
             for descriptor in descriptors:
-                # min_cost = float('inf')
-                # min_word = None
-                # min_index = -1
-                for d in descriptor:
-                    dist, match = bag_of_words.query(d, 5)
-                    for i in range(len(match)):
-                        bow_vector[match[i]] = 1 / dist[i]
-                # for j in range(len(bag_of_words)):
-                #     curr_cost = euclidean(bag_of_words[j], descriptor)
-                #     if curr_cost < min_cost:
-                #         min_cost = curr_cost
-                #         min_word = bag_of_words[j]
-                #         min_index = j
-                # bow_vector[min_index] += 1 / (min_cost**2 + 1)
-                # sum_weights += 1 / (min_cost**2 + 1)
-
+                dist, match = bag_of_words.query(d, 5)
+                for i in range(len(match)):
+                    bow_vector[match[i]] = 1 / dist[i]
             # Normalize
-                bow_vectors.append((bow_vector - np.mean(bow_vector))/np.std(bow_vector))
-            # for descriptor in descriptors:
-            #     min_cost = float('inf')
-            #     min_word = None
-            #     min_index = -1
-            #     for j in range(len(bag_of_words)):
-            #         curr_cost = euclidean(bag_of_words[j], descriptor)
-            #         if curr_cost < min_cost:
-            #             min_cost = curr_cost
-            #             min_word = bag_of_words[j]
-            #             min_index = j
-            #     bow_vector[min_index] += 1 / (min_cost**2 + 1)
-            #     sum_weights += 1 / (min_cost**2 + 1)
-            # # Normalize
-            # for key, value in bow_vector.items():
-            #     bow_vector[key] = bow_vector[key] / sum_weights
+            std = np.std(bow_vector) if np.std(bow_vector) != 0 else 0.001
+            bow_vectors.append((bow_vector - np.mean(bow_vector)) / std)
         except:
             print("      Error in computing encoding vector for " + \
                     PATH_TO_FILE + DATASET_TYPE[1] + '/' + scene + '/' + \
                     FILE_NAME + img_number + FILE_FORMAT + "!")
-        
-        # print("Finished computing encoding vector for " + PATH_TO_FILE + DATASET_TYPE[1] + \
-        #         '/' + scene + '/' + FILE_NAME + img_number + FILE_FORMAT + ".")
 
-        min_cost = float('inf')
         min_scene = None
         # Use 1-NN search to the training features to get best label
         for j in range(len(bow_vectors)):
             dist, match = bag_of_words.query(bow_vector, 1)
-            min_scene = matching_scenes[match]
-            # curr_cost = euclidean(bow_vectors[j].values(), bow_vector.values())
-            # if curr_cost < min_cost:
-                # min_cost = curr_cost
-                # min_scene = matching_scenes[j]
+            min_scene = matching_scenes[match[0]]
         if min_scene == scene:
             num_correct += 1
     print("----------------------------------------------------------------------------")
