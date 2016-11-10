@@ -55,9 +55,9 @@ except:
     except:
         print("Failed!")
         sys.exit(1)
-    bag_of_words = cKDTree(bag_of_words)
     pickle.dump(bag_of_words, open('bag_of_words.p', 'wb'))    
 
+bag_of_words = cKDTree(bag_of_words)
 bow_vectors = []
 matching_scenes = []
 
