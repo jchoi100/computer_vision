@@ -66,7 +66,7 @@ for scene in SCENE_TYPE:
             for descriptor in descriptors:
                 dist, match = bag_of_words.query(descriptor, 5)
                 for i in range(len(match)):
-                    bow_vector[match[i]] = 1.0 / dist[i]
+                    bow_vector[match[i]] = 1.0 / (dist[i]**2 + 1)
             bow_vectors.append((bow_vector - np.mean(bow_vector)) / np.std(bow_vector)) # Normalize
             matching_scenes.append(scene)
         except:
@@ -93,7 +93,7 @@ for scene in SCENE_TYPE:
             for descriptor in descriptors:
                 dist, match = bag_of_words.query(descriptor, 5)
                 for i in range(len(match)):
-                    bow_vector[match[i]] = 1.0 / dist[i]
+                    bow_vector[match[i]] = 1.0 / (dist[i]**2 + 1)
             bow_vector = (bow_vector - np.mean(bow_vector)) / np.std(bow_vector) # Normalize
         except:
             print("----> Error in computing encoding vector for ./test/" + scene + "/f000" + img_number + ".jpg")
