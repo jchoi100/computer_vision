@@ -20,6 +20,10 @@ def compute_ncc(u, v, u2):
 depth_map = np.zeros(El.shape)
 num_rows, num_cols = len(El), len(El[0])
 
+print("num_rows: " + str(num_rows))
+print("num_cols: " + str(num_cols))
+print("------------------")
+
 for v in range(num_rows - WINDOW_SIZE):
     for u in range(num_cols - WINDOW_SIZE):
         # v is fixed even in Er
@@ -33,10 +37,11 @@ for v in range(num_rows - WINDOW_SIZE):
             x = z * u / f
             y = z * v / f
         except:
-            print("There was no disparity! Writing (-1, -1, -1) to output file...")
+            print("   ---> There was no disparity! Writing (-1, -1, -1) to output file...")
             x, y, z = -1, -1, -1
             depth_map[v][u] = z
         output_file.write('(' + str(x) + ', ' + str(y) + ', ' + str(z) + ')\n')
+    print("Finished computing row" + str(v) + ". Still " + str(num_rows - WINDOW_SIZE - v) + " rows left...")
 
 for v in range(num_rows):
     for u in range(num_cols):
