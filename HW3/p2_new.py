@@ -11,7 +11,9 @@ WINDOW_SIZE = 15
 def compute_ncc(u, v, u2):
     denom1, denom2, numer = 0.0, 0.0, 0.0
     for i in range(WINDOW_SIZE):
+        print('.   .   .   .   .   .')
         for j in range(WINDOW_SIZE):
+            print('.       .      .      .')
             denom1 += El[v + j][u + i]**2
             denom2 += Er[v + j][u2 + i]**2
             numer += (El[v + j][u + i] * Er[v + j][u2 + i])
@@ -21,11 +23,14 @@ depth_map = np.zeros(El.shape)
 num_rows, num_cols = len(El), len(El[0])
 
 for v in range(num_rows - WINDOW_SIZE):
+    print('==========================================')
     for u in range(num_cols - WINDOW_SIZE):
         # v is fixed even in Er
+        print('--------------------------------')
         max_ncc, max_u2 = -float('inf'), 0.0
         if u > LEFT_MARGIN_BUFFER:
             for u2 in range(u - LEFT_MARGIN_BUFFER, u):
+                print('...................')
                 ncc = compute_ncc(u, v, u2)
                 if ncc > max_ncc:
                     max_ncc, max_u2 = ncc, u2
@@ -65,6 +70,7 @@ for v in range(num_rows):
                 depth_map[v][u] = (depth_map[v+1][u] + depth_map[v-1][u] + depth_map[v][u-1]) / 3
             else:
                 depth_map[v][u] = (depth_map[v-1][u] + depth_map[v+1][u] + depth_map[v][u-1] + depth_map[v][u+1]) / 4
+
 # Normalize/rescale to 0~255
 depth_map *= (255.0/depth_map.max())
 print(depth_map)
