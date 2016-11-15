@@ -49,7 +49,7 @@ bag_of_words = cKDTree(bag_of_words)
 print("Finished computing kmeans!")
 
 # iii) Create BoW encoding vector for each training image using BoW
-bow_vectors, matching_scenes = [], {}
+bow_vectors, matching_scenes = [], []
 for scene in SCENE_TYPE:
     for i in range(51, 200):
         if i < 10:
