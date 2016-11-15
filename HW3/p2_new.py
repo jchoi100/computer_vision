@@ -14,8 +14,8 @@ def compute_ncc(u, v, u2):
         for j in range(WINDOW_SIZE):
             denom1 += El[v + j][u + i]**2
             denom2 += Er[v + j][u2 + i]**2
-            numer += (El[v + j][u + i] - Er[v + j][u2 + i])**2
-    return numer / sqrt(denom1 * denom2)
+            numer += (El[v + j][u + i] * Er[v + j][u2 + i])
+    return numer / (sqrt(denom1) * sqrt(denom2))
 
 depth_map = np.zeros(El.shape)
 num_rows, num_cols = len(El), len(El[0])
