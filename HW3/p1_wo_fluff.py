@@ -49,7 +49,7 @@ bag_of_words = cKDTree(bag_of_words)
 print("Finished computing kmeans!")
 
 # iii) Create BoW encoding vector for each training image using BoW
-bow_vectors, matching_scenes = [], []
+bow_vectors, matching_scenes = {}, {}
 for scene in SCENE_TYPE:
     for i in range(51, 200):
         if i < 10:
@@ -67,8 +67,8 @@ for scene in SCENE_TYPE:
                 dist, match = bag_of_words.query(descriptor, 5)
                 for i in range(len(match)):
                     bow_vector[match[i]] = 1.0 / (dist[i]**2 + 1)
-            bow_vectors.append((bow_vector - np.mean(bow_vector)) / np.std(bow_vector)) # Normalize
-            matching_scenes.append(scene)
+            bow_vectors[scene+str(i)] = (bow_vector - np.mean(bow_vector)) / np.std(bow_vector) # Normalize
+            matching_scenes[scene+str(i)] = scene
         except:
             print("----> Error in computing encoding vector for ./train/" + scene + "/f000" + img_number + ".jpg")
 print("Finished computing encoding vector for all training images.")
@@ -92,13 +92,13 @@ for scene in SCENE_TYPE:
         try:
             for descriptor in descriptors:
                 dist, match = bag_of_words.query(descriptor, 5)
-                for i in range(len(match)):
-                    bow_vector[match[i]] = 1.0 / (dist[i]**2 + 1)
+                for j in range(len(match)):
+                    bow_vector[match[j]] = 1.0 / (dist[j]**2 + 1)
             bow_vector = (bow_vector - np.mean(bow_vector)) / np.std(bow_vector) # Normalize
         except:
             print("----> Error in computing encoding vector for ./test/" + scene + "/f000" + img_number + ".jpg")
         dist, match = bow_vectors.query(bow_vector) # 1 Nearest Neighbor search to find best match
-        min_scene = matching_scenes[match]
+        min_scene = matching_scenes[scene+ str(match)]
         if min_scene == scene:
             num_correct += 1.0
 print("Finished computing encoding vector for all test images.")
