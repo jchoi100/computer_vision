@@ -6,14 +6,14 @@ from scipy.spatial.distance import euclidean
 from scipy.cluster.vq import whiten
 from scipy.spatial import cKDTree
 
-SCENE_TYPE = ['buildings', 'cars', 'faces', 'food', 'people', 'trees']
+SCENE_TYPE = ['buildings', 'cars', 'food', 'people', 'trees']
 orb = cv2.ORB()
 
 # i, ii) Collect orb features for all training images into one large vector and run kmeans
 orb_features = []
 for scene in SCENE_TYPE:
     try:
-        scene_descriptors = pickle.load(open(scene + 'descriptors.p', 'rb'))
+        scene_descriptors = pickle.load(open(scene + '_descriptors.p', 'rb'))
     except:
         scene_descriptors = []
         for i in range(51, 200):
@@ -30,7 +30,7 @@ for scene in SCENE_TYPE:
                 scene_descriptors.extend(descriptors)
             except:
                 pass
-        pickle.dump(scene_descriptors, open(scene + 'descriptors.p', 'wb'))
+        pickle.dump(scene_descriptors, open(scene + '_descriptors.p', 'wb'))
     orb_features.extend(scene_descriptors)
 print("Finished computing orb features for all images!")
 
@@ -67,12 +67,10 @@ for scene in SCENE_TYPE:
                 dist, match = bag_of_words.query(descriptor, 5)
                 for i in range(len(match)):
                     bow_vector[match[i]] = 1.0 / (dist[i]**2 + 1)
-            bow_vectors.append((bow_vector - np.mean(bow_vector)) / np.std(bow_vector)) # Normalize
-            matching_scenes.append(scene)
         except:
-            bow_vectors.append(bow_vector)
-            matching_scenes.append(scene)
             print("----> Error in computing encoding vector for ./train/" + scene + "/f000" + img_number + ".jpg")
+        bow_vectors.append((bow_vector - np.mean(bow_vector)) / np.std(bow_vector))
+        matching_scenes.append(scene)
 print("Finished computing encoding vector for all training images.")
 
 # iv) Match testing image with label and check accuracy

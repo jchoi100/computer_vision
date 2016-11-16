@@ -17,39 +17,25 @@ Problem 1)
             distance weighted approach. (This is how I kept note of the 
             "votes" before running the 1NN.) The values were normalized.
 
-        3) This code assumes the following directory structure.
+        3) The bag of words (centers obtained from kmeans function is
+           saved with pickle with name 'bag_of_words.p'.)
+
+        4) This code assumes the following directory structure.
                 current directory
                     |____ p1.py
                     |____ /train/
-                    |        |____ faces
                     |        |____ trees
                     |           .
                     |           .
                     |        |____ buildings
                     |____ /test/
-                             |____ faces
                              |____ trees
                                 .
                                 .
                              |____ buildings    
     Accuracy Results:
-        I ran the code on different k values and different number
-        of images used for training.
-        Generally, if k is larger, results should be better.
-        However, for my series of tests, the accuracy values were
-        not consistent. Some results are reported below.
-
-        Due to time constraints (for large k values and many 
-        training images, tests ran for over 9 hours...), I used
-        a subset of images in the training set to train and all
-        the test images for testing.
-
         1) k = 800
-            accuracy = 88/300 = 0.2933333
-        2) k = 1600
-            accuracy = 91/300 = 0.3033333
-        3) k = 2500
-            accuracy = 82/300 = 0.2733333
+            accuracy = 66/255 = 0.25
 
 Problem 2)
     Note:
@@ -64,8 +50,20 @@ Problem 2)
                     |____ scene_l.bmp
                     |____ scene_r.bmp
 
-    Discussion:
+        3) This code outputs the 3d point cloud in text and
+           depth image in jpg. (Outputs included in submission folder.)
+                - jchoi100_hw3_3d_point_cloud.txt
+                - jchoi100_hw3_depth_map.jpg
 
+    Discussion:
+        There were great amounts of running time improvements when I used
+        some prior: the disparity won't be larger than some fixed number.
+        For instance, I used 14 as my "fixed number" and only searched 14
+        pixels to the left in the right image for matches.
+
+        Some areas have low texture, so it's harder to match. Also, many
+        areas are ambiguous to match. Moreover, the border areas might not
+        have any matches at all in the other image.
 
 Problem 3)
     Please see problem3.pdf for this problem.
