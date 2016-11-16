@@ -1,0 +1,72 @@
+EN.600.461 Computer Vision
+Fall 2016
+Homework #3
+
+Name: Joon Hyuck Choi
+JHED: jchoi100
+email: jchoi100@jhu.edu
+
+Problem 1)
+    Run: python p1.py
+
+    Note:
+        1) Please see p1.py for this problem.
+
+        2) In computing the bag of words and bow_vectors, I used the
+           distance weighted voting (1 / (dist**2+1)) and normalized.
+
+        3) The bag of words (centers obtained from kmeans function is
+           saved with pickle with name 'bag_of_words.p'.)
+
+        4) This code assumes the following directory structure.
+                current directory
+                    |__ p1.py
+                    |__ /train
+                    |      |__ trees
+                    |       .
+                    |       .
+                    |      |__ buildings
+                    |__ /test
+                           |__ trees
+                            .
+                            .
+                           |__ buildings    
+    Accuracy Results:
+        1) k = 800
+            accuracy = 66/255 = 0.2588
+
+        I tested with other values of k, and k=500 also seems to work
+        quite well. Larger values of k (such as 1600 and 2400) did not
+        necessarily perform better than k = 800 by far.
+
+Problem 2)
+    Run: python p2.py
+
+    Note:
+        1) Please see p2.py for this problem.
+
+        2) This code assumes the following directory structure.
+                current directory
+                    |__ p2.py
+                    |__ scene_l.bmp
+                    |__ scene_r.bmp
+
+        3) This code outputs the 3d point cloud in text and
+           depth image in jpg. (Outputs included in submission folder.)
+                - jchoi100_hw3_3d_point_cloud.txt
+                - jchoi100_hw3_depth_map.jpg
+
+    Discussion:
+        Some areas have low texture, so it's harder to match. Also, many
+        areas are ambiguous to match. Moreover, the border areas might not
+        have any matches at all in the other image.
+
+        There were great amounts of running time improvements when I used
+        some prior: the disparity won't be larger than some fixed number.
+        For instance, I used 14 as my "fixed number" and only searched 14
+        pixels to the left in the right image for matches.
+
+Problem 3)
+    Please see p3.pdf for this problem.
+
+END
