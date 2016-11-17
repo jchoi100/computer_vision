@@ -10,7 +10,8 @@ Problem 1)
     Run: python p1.py
 
     Note:
-        1) Please see p1.py for this problem.
+        1) Please see p1.py for this problem. 
+           (Pickle for kmeans, descriptors, and bow encodings included.)
 
         2) In computing the bag of words and bow_vectors, I used the
            distance weighted voting (1 / (dist**2+1)) and normalized.
@@ -33,11 +34,15 @@ Problem 1)
                            |__ buildings    
     Accuracy Results:
         1) k = 800
-            accuracy = 66/255 = 0.2588
+            accuracy: 72/255 = 0.28
 
-        I tested with other values of k, and k=500 also seems to work
-        quite well. Larger values of k (such as 1600 and 2400) did not
-        necessarily perform better than k = 800 by far.
+        I tested with other values of k (in kmeans), and k=500 also 
+        seems to work quite well. Larger values of k (such as 1600 
+        and 2400) did not necessarily perform better than k = 800 by far.
+        
+        Moreover, larger values of K in kNN clustering when learning
+        the bag of words encoding vectors also seems to work better.
+
 
 Problem 2)
     Run: python p2.py
@@ -65,6 +70,7 @@ Problem 2)
         some prior: the disparity won't be larger than some fixed number.
         For instance, I used 14 as my "fixed number" and only searched 14
         pixels to the left in the right image for matches.
+
 
 Problem 3)
     Please see p3.pdf for this problem.

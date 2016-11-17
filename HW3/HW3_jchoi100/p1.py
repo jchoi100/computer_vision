@@ -73,7 +73,7 @@ for scene in SCENE_TYPE:
             bow_vector = np.array([0.] * 800)
             try:
                 for descriptor in descriptors:
-                    dist, match = bag_of_words.query(descriptor, 5)
+                    dist, match = bag_of_words.query(descriptor, 20)
                     for j in range(len(match)):
                         bow_vector[match[j]] = 1.0 / (dist[j]**2 + 1)
             except:
@@ -104,7 +104,7 @@ for scene in SCENE_TYPE:
         bow_vector = np.array([0.] * 800)
         try:
             for descriptor in descriptors:
-                dist, match = bag_of_words.query(descriptor, 5)
+                dist, match = bag_of_words.query(descriptor, 20)
                 for j in range(len(match)):
                     bow_vector[match[j]] = 1.0 / (dist[j]**2 + 1)
             bow_vector = (bow_vector - np.mean(bow_vector)) / np.std(bow_vector) # Normalize
